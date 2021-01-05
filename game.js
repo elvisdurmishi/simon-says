@@ -1,4 +1,7 @@
 function nextSequence() {
+  level++;
+  $('#level-title').text('Level ' + level);
+  $('#lvl-' + level).addClass('green');
   var randomNumber = Math.floor(Math.random() * 9) + 1;
   console.log(randomNumber);
   var randomChosenNumber = buttonNumbers[randomNumber - 1];
@@ -51,13 +54,14 @@ $('.click').click(function () {
   }, 300);
 });
 
-var keyPressed = false;
+var started = false;
+var level = 0;
 
 $(document).keypress(function () {
+  if (!started) {
+    nextSequence();
+    $('#lvl-' + level).addClass('green');
+    started = true;
+  }
   $('.game-start').css('display', 'none');
-  keyPressed = true;
 });
-
-if (keyPressed === true) {
-  nextSequence();
-}
