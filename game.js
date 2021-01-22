@@ -19,9 +19,7 @@ var pressed = 0;
 //Keyboard input to start
 $('.click').click(function () {
   ++pressed;
-
   var userChosenButton = $(this).attr('id');
-
   userClickedPattern.push(userChosenButton);
 
   $(this).addClass('pressed');
@@ -29,6 +27,8 @@ $('.click').click(function () {
     $(this).removeClass('pressed');
   }, 300);
   if (!checkAnswer(pressed)) {
+    var audio = new Audio('./sounds/wrong.mp3');
+    audio.play();
     $('#level-title').text('Game Over, press any key to Restart');
     for (var i = 1; i < 10; i++) {
       $('#btn-' + i).addClass('game-over');
@@ -46,7 +46,7 @@ $('.click').click(function () {
       }
     }, 500);
     startOver();
-  }
+  } else playSound(userChosenButton.slice(4, 5));
 });
 
 //Touch input to start
@@ -85,9 +85,9 @@ function nextSequence() {
   var randomChosenNumber = buttonNumbers[randomNumber - 1];
   gamePattern.push(randomChosenNumber);
 
-  var totalSeconds = 0;
   var i = 0;
-  setInterval(setTime, 1000);
+  var totalSeconds = 0;
+  setInterval(setTime, 500);
 
   function setTime() {
     ++totalSeconds;
@@ -95,10 +95,11 @@ function nextSequence() {
       var value = gamePattern[i].slice(4, 5);
       $('#scr-' + value)
         .toggleClass('blue')
-        .delay(800)
+        .delay(400)
         .queue(function () {
           $(this).removeClass('blue').dequeue();
         });
+      playSound(value);
     }
     i++;
   }
@@ -130,4 +131,9 @@ function startOver() {
   gamePattern = [];
   started = false;
   $('#level-title').css('font-size', '1.5rem');
+}
+
+function playSound(number) {
+  var audio = new Audio('./sounds/sound-' + number + '.mp3');
+  audio.play();
 }
