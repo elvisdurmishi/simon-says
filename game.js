@@ -14,7 +14,12 @@ var gamePattern = [];
 
 var userClickedPattern = [];
 
+var pressed = 0;
+
+//Keyboard input to start
 $('.click').click(function () {
+  ++pressed;
+
   var userChosenButton = $(this).attr('id');
 
   console.log(userChosenButton);
@@ -25,7 +30,7 @@ $('.click').click(function () {
   setTimeout(() => {
     $(this).removeClass('pressed');
   }, 300);
-  if (!checkAnswer(userClickedPattern.length - 1)) {
+  if (!checkAnswer(pressed)) {
     $('#level-title').text('Game Over, press any key to Restart');
     for (var i = 1; i < 10; i++) {
       $('#btn-' + i).addClass('game-over');
@@ -46,6 +51,17 @@ $('.click').click(function () {
   }
 });
 
+//Touch input to start
+$('.game-start').on('tap', function () {
+  $('#level-title').css('font-size', '2rem');
+  if (!started) {
+    nextSequence();
+    $('#lvl-' + level).addClass('green');
+    started = true;
+  }
+  $('.game-start').css('display', 'none');
+});
+
 var started = false;
 var level = 0;
 
@@ -59,7 +75,10 @@ $(document).keypress(function () {
   $('.game-start').css('display', 'none');
 });
 
+$('#btn-1').addClass('.disabled');
+
 function nextSequence() {
+  pressed = 0;
   userClickedPattern = [];
   level++;
   $('#level-title').text('Level ' + level);
@@ -68,7 +87,6 @@ function nextSequence() {
   var randomChosenNumber = buttonNumbers[randomNumber - 1];
   console.log(randomChosenNumber);
   gamePattern.push(randomChosenNumber);
-  console.log(gamePattern.length);
 
   var totalSeconds = 0;
   var i = 0;
@@ -94,21 +112,41 @@ $(function () {
     $('.start').fadeOut(500).fadeIn(500);
   }, 2000);
 });
-
-function checkAnswer() {
-  for (var i = 0; i < gamePattern.length; i++) {
-    if (gamePattern[i] === userClickedPattern[i]) {
-      if (userClickedPattern.length === gamePattern.length) {
-        setTimeout(function () {
-          nextSequence();
-        }, 1000);
-        return true;
-      }
-      return true;
-    }
+var counter = 0;
+function checkAnswer(answer) {
+  answer = answer - 1;
+  if (answer === 0) {
+    counter = 0;
   }
-  return false;
+  if (gamePattern[answer] === userClickedPattern[answer]) {
+    counter++;
+  } else return false;
+  if (counter === gamePattern.length) {
+    nextSequence();
+    return true;
+  }
+  return true;
 }
+
+// function checkAnswer(answer) {
+//   var counter = 0;
+//   for (var i = 0; i < gamePattern.length; i++) {
+//     if (gamePattern[i] === userClickedPattern[i]) {
+//       if (userClickedPattern.length === gamePattern.length) {
+//         counter++;
+//       }
+//     } else if (userClickedPattern[answer - 1] === gamePattern[answer - 1]) {
+//       return false;
+//     }
+//   }
+//   if (counter === gamePattern.length) {
+//     nextSequence();
+//     return true;
+//   }
+//   if (answer < gamePattern.length) {
+//     return true;
+//   } else return false;
+// }
 
 function startOver() {
   level = 0;
