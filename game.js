@@ -22,8 +22,6 @@ $('.click').click(function () {
 
   var userChosenButton = $(this).attr('id');
 
-  console.log(userChosenButton);
-
   userClickedPattern.push(userChosenButton);
 
   $(this).addClass('pressed');
@@ -85,7 +83,6 @@ function nextSequence() {
   $('#lvl-' + level).addClass('green');
   var randomNumber = Math.floor(Math.random() * 9) + 1;
   var randomChosenNumber = buttonNumbers[randomNumber - 1];
-  console.log(randomChosenNumber);
   gamePattern.push(randomChosenNumber);
 
   var totalSeconds = 0;
@@ -127,26 +124,6 @@ function checkAnswer(answer) {
   }
   return true;
 }
-
-// function checkAnswer(answer) {
-//   var counter = 0;
-//   for (var i = 0; i < gamePattern.length; i++) {
-//     if (gamePattern[i] === userClickedPattern[i]) {
-//       if (userClickedPattern.length === gamePattern.length) {
-//         counter++;
-//       }
-//     } else if (userClickedPattern[answer - 1] === gamePattern[answer - 1]) {
-//       return false;
-//     }
-//   }
-//   if (counter === gamePattern.length) {
-//     nextSequence();
-//     return true;
-//   }
-//   if (answer < gamePattern.length) {
-//     return true;
-//   } else return false;
-// }
 
 function startOver() {
   level = 0;
