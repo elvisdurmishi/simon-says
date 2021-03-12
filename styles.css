@@ -67,6 +67,11 @@ body {
   flex-direction: column;
 }
 
+.block-input {
+  pointer-events: none;
+  filter: brightness(10%);
+}
+
 .levels {
   display: flex;
   flex-direction: row;

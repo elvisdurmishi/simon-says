@@ -33,6 +33,7 @@ $('.click').click(function () {
     for (var i = 1; i < 10; i++) {
       $('#btn-' + i).addClass('game-over');
       if (i < 6) {
+        $('#circle-' + i).removeClass('green');
         $('#circle-' + i).addClass('game-over');
       }
     }
@@ -46,19 +47,21 @@ $('.click').click(function () {
       }
     }, 500);
     startOver();
-  } else playSound(userChosenButton.slice(4, 5));
+  } else {
+    playSound(userChosenButton.slice(4, 5));
+  }
 });
 
-//Touch input to start
-$('.game-start').on('tap', function () {
-  $('#level-title').css('font-size', '2rem');
-  if (!started) {
-    nextSequence();
-    $('#lvl-' + level).addClass('green');
-    started = true;
-  }
-  $('.game-start').css('display', 'none');
-});
+// //Touch input to start
+// $('.game-start').on('tap', function () {
+//   $('#level-title').css('font-size', '2rem');
+//   if (!started) {
+//     nextSequence();
+//     $('#lvl-' + level).addClass('green');
+//     started = true;
+//   }
+//   $('.game-start').css('display', 'none');
+// });
 
 var started = false;
 var level = 0;
@@ -86,11 +89,8 @@ function nextSequence() {
   gamePattern.push(randomChosenNumber);
 
   var i = 0;
-  var totalSeconds = 0;
   setInterval(setTime, 500);
-
   function setTime() {
-    ++totalSeconds;
     if (i < gamePattern.length) {
       var value = gamePattern[i].slice(4, 5);
       $('#scr-' + value)
@@ -103,6 +103,31 @@ function nextSequence() {
     }
     i++;
   }
+  var j = 0;
+  setInterval(setWaitTime, 500);
+  function setWaitTime() {
+    if (j < gamePattern.length) {
+      for (var z = 1; z < 10; z++) {
+        $('#btn-' + z)
+          .toggleClass('block-input')
+          .delay(400)
+          .queue(function () {
+            $(this).removeClass('block-input').dequeue();
+          });
+      }
+    }
+    j++;
+  }
+}
+
+function dequeAnswers(length) {
+  for (var i = 0; i < length; i++) {
+    $('#circle-' + i).removeClass('green');
+  }
+}
+
+function returnInterval(interval) {
+  return interval;
 }
 
 $(function () {
@@ -118,9 +143,11 @@ function checkAnswer(answer) {
   }
   if (gamePattern[answer] === userClickedPattern[answer]) {
     counter++;
+    $('#circle-' + counter).addClass('green');
   } else return false;
   if (counter === gamePattern.length) {
     nextSequence();
+    setTimeout(dequeAnswers, 300, gamePattern.length);
     return true;
   }
   return true;
